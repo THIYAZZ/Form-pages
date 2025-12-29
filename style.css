@@ -1,0 +1,320 @@
+* {
+  border: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #b1aa4b50;      /* page BACKGROUND color – change this if you want */
+  --fg: #e3e4e8;
+  --input: #a2aadc;
+  --primary: #8c9be8; /* main accent: icon, button, click-text, caret */
+  --dur: 1s;
+  font-size: calc(16px + (24 - 16)*(100vw - 320px)/(1280 - 320));
+}
+
+body,
+input,
+button {
+  color: var(--fg);
+  font: 1em/1.5 "Hind", sans-serif;
+}
+
+body {
+  background: var(--bg);
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ---------- CARD CONTAINER (NEW) ---------- */
+
+.form-card {
+  margin: auto;                            /* center card on page */
+  width: min(50%, 42rem);                 /* responsive width */
+  background: #fdfdfd;                     /* card background */
+  border-radius: 0.9em;                    /* rounded corners */
+  box-shadow: 0 10px 24px rgba(0,0,0,0.25);/* soft shadow */
+  padding: 1.9em 2.1em 2.3em;
+  border-top: 0.4em solid #f3d278;         /* Google-form like top bar */
+}
+
+/* make inner text dark on the light card */
+.form-card,
+.form-card input,
+.form-card button,
+.form-card label {
+  color: #202124;
+}
+
+/* ---------- FORM LAYOUT ---------- */
+
+.upload-form {
+  margin: 0;              /* was: auto; card is already centered */
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75em;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+/* headings */
+.field > label {
+  font-size: 0.8em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.85;
+  text-align: left;
+}
+
+/* ---------- 1) UPLOAD DOCUMENT (NO ANIMATION) ---------- */
+
+#upload {
+  background: var(--input);
+  border-radius: 0.4em;
+  padding: 0.7em 0.9em;
+  width: 100%;
+  cursor: pointer;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.16);
+  font-size: 0.9em;
+}
+
+/* hide default file button */
+#upload::-webkit-file-upload-button,
+#upload::file-selector-button {
+  visibility: hidden;
+}
+
+#upload::before {
+  content: "Choose a file...";
+  color: rgba(23, 24, 28, 0.7);
+}
+
+/* ---------- 2) PASTE LINK (ICON → BOX ANIMATION) ---------- */
+
+.paste-wrapper {
+  position: relative;
+  width: 100%;
+  height: 3.1em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* small circular input behind the icon (invisible until expand) */
+.paste-input {
+  position: relative;
+  background: transparent;
+  border-radius: 50%;
+  width: 2.5em;
+  height: 2.5em;
+  appearance: none;
+  box-shadow: none; /* no visible circle */
+  padding: 0;
+  text-indent: -9999px;      /* hide placeholder text in circle state */
+  transition:
+    width calc(var(--dur) * 0.5) ease,
+    height calc(var(--dur) * 0.5) ease,
+    border-radius calc(var(--dur) * 0.5) ease,
+    padding calc(var(--dur) * 0.5) ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+  caret-color: transparent;   /* hidden until animation finishes */
+}
+
+/* expand to box on focus/valid */
+.paste-input:focus,
+.paste-input:valid {
+  background: var(--input);
+  border-radius: 0.35em;
+  width: 100%;
+  height: 100%;
+  padding: 0.75em 1em;
+  text-indent: 0;             /* show placeholder and text when expanded */
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.22);
+}
+
+/* placeholder style (sample link color) */
+.paste-input::placeholder {
+  opacity: 0.55;
+  font-size: 0.9em;
+  color: rgba(15, 26, 67, 0.6);   /* default placeholder color */
+}
+
+/* when clicked/focused, change placeholder color */
+.paste-input:focus::placeholder {
+  color: rgb(0, 0, 0);    /* uses --primary tone */
+}
+
+/* start caret-color animation on focus */
+.paste-input:focus {
+  outline: transparent;
+  animation: showCaret var(--dur) steps(1) forwards;
+}
+
+/* ---------- PASTE ICON (CLIPBOARD) ---------- */
+
+.paste-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2.2em;
+  height: 2.8em;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 1;
+}
+
+/* clipboard + paper */
+.paste-icon::before,
+.paste-icon::after {
+  content: "";
+  position: absolute;
+  border: 0.12em solid var(--primary);
+  box-sizing: border-box;
+}
+
+/* back clipboard board */
+.paste-icon::before {
+  left: 0;
+  top: 0.4em;
+  width: 1.5em;
+  height: 2.1em;
+  border-radius: 0.25em;
+  box-shadow:
+    0.35em -0.55em 0 -0.15em var(--primary),
+    0.35em -0.55em 0 0.02em #0638ee6d;
+}
+
+/* front page + lines */
+.paste-icon::after {
+  right: 0;
+  top: 0.65em;
+  width: 1.3em;
+  height: 1.9em;
+  border-radius: 0.18em;
+  background:
+    linear-gradient(var(--primary) 0 0) 0.25em 0.45em / 0.8em 0.08em no-repeat,
+    linear-gradient(var(--primary) 0 0) 0.25em 0.9em / 0.8em 0.08em no-repeat,
+    linear-gradient(var(--primary) 0 0) 0.25em 1.35em / 0.8em 0.08em no-repeat;
+}
+
+/* trigger icon movement when active */
+.paste-input:focus + .paste-icon,
+.paste-input:valid + .paste-icon {
+  animation: clipboardToBox var(--dur) ease forwards;
+}
+
+/* ---------- 3) PROCEED BUTTON ---------- */
+
+.proceed-btn {
+  align-self: center;
+  padding: 0.6em 2.2em;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 0.6em 1.4em rgba(0,0,0,0.18);
+  transition: 0.2s;
+  font-size: 0.95em;
+}
+
+.proceed-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0.9em 1.8em rgba(0,0,0,0.25);
+}
+
+.proceed-btn:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 0.3em 0.9em rgba(0,0,0,0.25);
+}
+
+/* ---------- ANIMATIONS ---------- */
+
+/* caret-color stays transparent then jumps to primary */
+@keyframes showCaret {
+  0%   { caret-color: transparent; }
+  99%  { caret-color: transparent; }
+  100% { caret-color: var(--primary); }
+}
+
+/* ICON: center → inside box, then fade */
+@keyframes clipboardToBox {
+  0% {
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  35% {
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.98) rotate(-10deg);
+    opacity: 1;
+  }
+  70% {
+    left: 24%;
+    transform: translate(-50%, -50%) scale(0.93) rotate(-5deg);
+    opacity: 1;
+  }
+  100% {
+    left: 1.4em;
+    transform: translate(0, -50%) scale(0.9) rotate(0deg);
+    opacity: 0;
+  }
+}
+
+/* ---------- (Click Here) TEXT ---------- */
+
+.click-text {
+  position: absolute;
+  left: calc(50% + 3.2em);        /* horizontal position beside icon */
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.78em;
+  color: var(--primary);
+  opacity: 0.85;
+  cursor: pointer;
+  transition: opacity 0.18s ease,
+              transform 0.18s ease;
+}
+
+/* on hover make it a bit brighter */
+.click-text:hover {
+  opacity: 1;
+}
+
+/* when input is focused or valid, fade and move text up */
+.paste-input:focus ~ .click-text,
+.paste-input:valid ~ .click-text {
+  opacity: 0;
+  transform: translateY(-1.2em);
+}
+
+/* ---------- MOBILE RESPONSIVE FIX ---------- */
+@media (max-width: 600px) {
+  .form-card {
+    width: 90vw;               /* Much wider on mobile */
+    padding: 1.5em 1.2em;      /* Keep spacing nice */
+    border-radius: 0.8em;
+  }
+
+  .upload-form {
+    gap: 1.4em;                /* Slightly less spacing */
+  }
+
+  .field > label {
+    font-size: 0.75em;
+  }
+
+  .proceed-btn {
+    width: 100%;
+    font-size: 0.95em;
+    padding: 0.9em;
+  }
+}

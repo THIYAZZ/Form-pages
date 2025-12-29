@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload & Paste Link</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Hind&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 🟨 Card container (NEW) -->
+  <div class="form-card">
+    <form class="upload-form">
+
+      <!-- 1) Upload document -->
+      <div class="field">
+        <label>Upload document</label>
+        <input id="upload" type="file" required>
+      </div>
+
+      <!-- 2) Paste form link (animated) -->
+      <div class="field">
+        <label>Paste form link</label>
+        <div class="paste-wrapper">
+          <input
+            id="formlink"
+            class="paste-input"
+            type="url"
+            placeholder="https://example.com/form"
+            pattern=".*\S.*"
+            required
+          >
+          <span class="paste-icon"></span>
+          <label for="formlink" class="click-text">(Click Here)</label>
+        </div>
+      </div>
+
+      <!-- 3) Proceed button -->
+      <button type="submit" class="proceed-btn">Proceed</button>
+
+    </form>
+  </div>
+
+</body>
+</html>
